@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdexcept>
 #include <concepts>
+#include <expected>
 
 namespace dv::cpp23 {
     
@@ -54,6 +55,17 @@ namespace dv::cpp23 {
             if (x < 0 || x >= self.width || y < 0 || y >= self.height)
                 throw std::out_of_range("Bitmap2 pixel coordinates out of range");
             return std::forward<Self>(self).pixels[y * self.width + x];
+        }
+
+        enum class Error {
+            OutOfRange
+        };
+
+        auto first() const -> std::expected<Color, Error> {
+            if (pixels.empty()) {
+                return std::unexpected(Error::OutOfRange);
+            }
+            return pixels[0];
         }
 
     };
